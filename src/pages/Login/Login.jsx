@@ -1,4 +1,17 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+
 const Login = () => {
+  const captchaRef = useRef(null);
+  const [disabled, setdisable] = useState(true);
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
+
   const handleLogin = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -6,6 +19,15 @@ const Login = () => {
     const password = form.password.value;
 
     console.log(email, password);
+  };
+
+  const handleCaptchaValided = () => {
+    const user_captcha_valided = captchaRef.current.value;
+    if (validateCaptcha(user_captcha_valided)) {
+      setdisable(false);
+    } else {
+      setdisable(true);
+    }
   };
   return (
     <div className="hero min-h-screen ">
@@ -29,7 +51,7 @@ const Login = () => {
                 placeholder="email"
                 className="input input-bordered"
                 name="email"
-                required
+                // required
               />
             </div>
             <div className="form-control">
@@ -41,16 +63,36 @@ const Login = () => {
                 placeholder="password"
                 className="input input-bordered"
                 name="password"
-                required
+                // required
               />
+              <label className="label">Forget Password!</label>
+            </div>
+            <div>
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
-                </a>
+                <LoadCanvasTemplate />
               </label>
+              <input
+                ref={captchaRef}
+                className="input input-bordered"
+                name="captcha"
+                type="text"
+                placeholder="Type the Captcha above"
+              />
+              <br />
+              <button
+                onClick={handleCaptchaValided}
+                className="btn  btn-neutral btn-xs"
+              >
+                Valided
+              </button>
             </div>
             <div className="form-control mt-6">
-              <input className="btn btn-primary" type="submit" value="Login" />
+              <input
+                disabled={disabled}
+                className="btn btn-primary"
+                type="submit"
+                value="Login"
+              />
             </div>
           </form>
         </div>
